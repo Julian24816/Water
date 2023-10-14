@@ -3,44 +3,22 @@ package dev.julianm.water
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
+import dev.julianm.water.data.LocalDatabase
+import dev.julianm.water.data.WaterRepository
 import dev.julianm.water.ui.theme.WaterTrackerForHealthConnectTheme
+import dev.julianm.water.ui.view.WaterTrackerScreen
+import dev.julianm.water.ui.view.WaterViewModel
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val waterDao = LocalDatabase.getDatabase(this).waterDao()
+        val waterRepository = WaterRepository(waterDao)
+        val viewModel = WaterViewModel(waterRepository)
         setContent {
             WaterTrackerForHealthConnectTheme {
-                // A surface container using the 'background' color from the theme
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    Greeting("Activity")
-                }
+                WaterTrackerScreen(viewModel)
             }
         }
-    }
-}
-
-@Composable
-fun Greeting(name: String, modifier: Modifier = Modifier) {
-    Text(
-        text = "Hello $name!",
-        modifier = modifier
-    )
-}
-
-@Preview(showBackground = true)
-@Composable
-fun GreetingPreview() {
-    WaterTrackerForHealthConnectTheme {
-        Greeting("Julian")
     }
 }
